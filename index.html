@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/logos/dragonsheets.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DragonSheets — Amazon Seller Central &amp; PPC Data, Live in Google Sheets</title>
+    <meta name="description" content="DragonSheets pipes your Amazon Seller Central and PPC reports into Google Sheets and keeps them fresh on a schedule. No CSV exports, no code. Add to Chrome, connect Amazon, done." />
+    <!-- No web fonts: DragonSheets uses the system font stack everywhere
+         (see Dragon-marketing/BRANDING.md, v2/v3 typography). -->
+
+    <!-- TODO_TRACKING: replace placeholder IDs — see DRAGONSHEETS_USER_TASKS.md
+         G-TODOTODO00       → the DragonSheets GA4 measurement ID
+         TODO_CLARITY_ID    → the DragonSheets Clarity project ID
+         TODO_META_PIXEL_ID → the DragonSheets Meta pixel/dataset ID (also in
+                              the <noscript> img in <body> below)
+         Each must be a NEW per-product property/project/dataset — never reuse
+         another Dragon product's IDs (fork-inherited IDs pollute the parent). -->
+
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+      (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", "TODO_CLARITY_ID");
+    </script>
+    <!-- Google Analytics. ⚠️ The shim MUST push the `arguments` object —
+         dataLayer.push(args) with a rest-param array is silently ignored by
+         gtag.js and sends ZERO hits, not even page_view. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TODOTODO00"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-TODOTODO00');
+    </script>
+    <!-- Meta Pixel. Own dataset for getdragonsheets.com — deliberately NOT
+         another Dragon product's pixel: all brands run the same shared code
+         firing identical event names, so one dataset would make them
+         separable only by URL filter. Subsequent (client-side) route changes
+         fire PageView from src/lib/track.js — this only covers the initial
+         hard load. -->
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', 'TODO_META_PIXEL_ID');
+      fbq('track', 'PageView');
+    </script>
+  </head>
+  <body>
+    <!-- Meta Pixel no-JS fallback. Meta's copy-paste snippet puts this in
+         <head>, but <noscript> there may only hold <link>/<style>/<meta> —
+         an <img> is a parse error and Vite's HTML parser rejects the build.
+         It belongs in <body>. -->
+    <noscript><img height="1" width="1" style="display:none" alt=""
+      src="https://www.facebook.com/tr?id=TODO_META_PIXEL_ID&ev=PageView&noscript=1" /></noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

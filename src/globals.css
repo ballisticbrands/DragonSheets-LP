@@ -1,0 +1,45 @@
+/* DragonSheets uses the system font stack everywhere — no web fonts loaded
+   (see Dragon-marketing/BRANDING.md, v2/v3 typography). */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #2F7D4F;
+  --primary-light: #98CC65;
+  --dark: #0F3D2E;
+  --accent: #D63C3C;
+  --text: #1A1A1A;
+  --white: #FFFFFF;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+  background: var(--white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings inherit the page font (system stack) — never a display font. */
+h1, h2, h3, h4, h5, h6 {
+  font-family: inherit;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
