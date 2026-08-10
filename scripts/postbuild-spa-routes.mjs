@@ -94,6 +94,23 @@ for (const [slug, c] of Object.entries(sheetsCompetitors)) {
     h1: [c.h1?.plain, c.h1?.accent].filter(Boolean).join(' '),
     intro: flat(c.subhead),
     bullets: [c.tldr?.us, c.tldr?.them].filter(Boolean).map(flat),
+    /* Full comparison copy, not just the TL;DR (2026-08-10). These entries hold
+     * compare / themWins / usWins / faq; emitting only the h1 leaves the page too
+     * thin for a decent Ads landing-page-experience score. Same object the /vs/
+     * component renders, so this is prerendering, not cloaking. */
+    sections: [
+      ...(c.compare || []).map(sec => ({
+        h: sec.label,
+        items: (sec.rows || []).map(r => {
+          const cell = v => (v === 'yes' ? 'Yes' : v === 'no' ? 'No' : v === 'partial' ? 'Partial' : v?.t || '');
+          return flat(`${r.feature}${r.note ? ` (${r.note})` : ''} — DragonSheets: ${cell(r.values?.[0])}; ${c.name}: ${cell(r.values?.[1])}`);
+        }),
+      })),
+      { h: `Where ${c.name} wins`, items: (c.themWins || []).map(w => flat(`${w.title}. ${w.desc}`)) },
+      { h: 'Where DragonSheets wins', items: (c.usWins || []).map(w => flat(`${w.title}. ${w.desc}`)) },
+      { h: 'Pricing', items: [c.priceNote].filter(Boolean).map(flat) },
+      { h: 'Frequently asked questions', items: (c.faq || []).map(f => flat(`${f.q} ${f.a}`)) },
+    ].filter(sec => sec.items.length),
   };
 }
 
@@ -138,6 +155,8 @@ function buildHtml(route, m) {
     m.intro ? `<p>${esc(m.intro)}</p>` : '',
     Array.isArray(m.bullets) && m.bullets.length
       ? `<ul>${m.bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>` : '',
+    ...(m.sections || []).map(sec =>
+      `<h2>${esc(sec.h)}</h2>\n        <ul>${sec.items.map(i => `<li>${esc(flat(i))}</li>`).join('')}</ul>`),
     `<p><a href="${INSTALL}">Add to Google Sheets — 7-day free trial, no credit card</a></p>`,
   ].filter(Boolean).join('\n        ');
 
@@ -164,4 +183,22 @@ for (const route of routes) {
   writeFileSync(join(dir, 'index.html'), buildHtml(route, m));
   n++;
 }
+/* ── Guard: a thin page cannot earn a decent Ads landing-page score ────── */
+const MIN_WORDS = 120;
+const EXEMPT = r => r.startsWith('/support') || ['/privacy', '/tos', '/install'].includes(r);
+const thin = [];
+for (const route of Object.keys(meta)) {
+  if (EXEMPT(route)) continue;
+  const dir = route === '/' ? dist : join(dist, ...route.split('/').filter(Boolean));
+  const text = readFileSync(join(dir, 'index.html'), 'utf8')
+    .replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<!--[\s\S]*?-->/g, '')
+    .replace(/<[^>]+>/g, ' ');
+  const words = text.split(/\s+/).filter(Boolean).length;
+  if (words < MIN_WORDS) thin.push(`${route} (${words}w)`);
+}
+if (thin.length) {
+  console.error(`postbuild: ${thin.length} route(s) under ${MIN_WORDS} crawler-visible words:\n  ${thin.join('\n  ')}`);
+  process.exit(1);
+}
+
 console.log(`postbuild: prerendered ${n} routes (title + description + canonical + OG + content)`);
