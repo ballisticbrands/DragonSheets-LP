@@ -1,5 +1,8 @@
 # DragonSheets-LP
 
+> **Picking this up after a break? Read [STATUS.md](STATUS.md) first.** The LP is live and
+> finished; the only open item here is `CWS_URL`.
+
 Landing page for **DragonSheets** — Amazon Seller Central & PPC data, live in Google Sheets, delivered as a Chrome extension.
 
 - **Live:** https://getdragonsheets.com
